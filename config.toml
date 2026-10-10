@@ -1,0 +1,106 @@
+# All choices affecting samples, estimators, simulations and evaluation live here.
+[paths]
+raw = "data/raw"
+output = "output"
+reports = "reports"
+processed = "output/processed"
+
+[data]
+categories = ["sdr", "cer", "lnd"]
+chunk_rows = 250000
+first_week = 1
+last_week = 399
+training_share = 0.70
+validation_share = 0.15
+products = 4
+minimum_coverage = 0.50
+minimum_training_weeks = 60
+minimum_stores = 15
+# Broad market includes private-label, cherry, caffeine-free, clear and Diet Rite colas.
+cola_pattern = "COKE|COCA|PEPSI|COLA"
+ambiguous_pattern = "COLA CHAMPAGNE|COKE PRODUCTS"
+brand_pattern = "COKE|COCA|PEPSI|COLA"
+# Core selection excludes variants whose attributes differ from plain caffeinated cola.
+variant_pattern = "CHERRY|CAFFEINE|CRYSTAL|COKE II|BRAND COKE"
+size_pattern = '^2 *L(T|TR|ITER)?$'
+omitted_minimum_coverage = 0.20
+category_coverage_threshold = 0.90
+
+[demand]
+specifications = ["week_FE", "season_trend", "season_only"]
+dynamic_lags = 4
+cluster = "store_and_week"
+
+[identification]
+event_change = 0.05
+event_rival_stability = 0.01
+event_window = 4
+
+[pricing]
+price_changes = [0.05, 0.10, 0.15]
+cost_multipliers = [0.90, 1.00, 1.10]
+grid_points = 21
+maximum_iterations = 100
+support_quantiles = [0.05, 0.95]
+minimum_reference_stores = 15
+draws = 400
+store_wild_draws = 199
+seed = 8102026
+robust_grid_points = 11
+robust_maximum_change = 0.10
+lower_tail = 0.05
+form_grid_points = 11
+form_price_changes = [0.10, 0.20]
+
+[forecast]
+rolling_window = 156
+calibration_window = 26
+calibration_warmup = 52
+minimum_calibration_weeks = 8
+calibration_shrinkage_weeks = 8
+factor_bounds = [0.50, 2.00]
+models = ["seasonal_naive", "recent4", "calendar", "pricing", "no_trend", "rolling_no_trend", "rolling_calibrated", "rolling_promo_calibrated"]
+
+# Operational candidate tuning and refit settings were absent from the upload.
+# These documented defaults are newly chosen, not a claimed exact replication.
+ridge_alphas = [1.0, 10.0, 100.0]
+forest_leaf_counts = [16, 32]
+boosting_leaf_counts = [15, 31]
+forest_trees = 100
+boosting_iterations = 100
+threads = 1
+random_seed = 8102026
+validation_fold_weeks = 13
+refit_every_weeks = 13
+interval_coverage = 0.90
+calibrated_ridge_alpha = 10.0
+point_calibration_weeks = 26
+
+[sample]
+first_week = 1
+last_week = 399
+train_end = 295
+selection_end = 321
+calibration_end = 347
+minimum_stores = 15
+minimum_training_coverage = 0.35
+products_per_category = 4
+
+[categories.sdr]
+label = "Soft drinks"
+[categories.cer]
+label = "Cereal"
+[categories.lnd]
+label = "Laundry detergent"
+# Preserve the uploaded report's visible portfolio; audit training eligibility.
+# A simple ranking of disparate package introductions need not share a sample.
+fixed_upcs = [1111187404, 3700091223, 3700091224, 3700092730]
+
+[verification]
+absolute_tolerance = 0.000001
+relative_tolerance = 0.00000001
+absorption_tolerance = 0.00000000001
+price_tolerance = 0.00000001
+profit_tolerance = 0.000001
+# Percentage-point comparison to legacy float32-input forecasts.
+forecast_comparison_tolerance = 0.00001
